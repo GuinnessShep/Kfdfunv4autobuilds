@@ -5,7 +5,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
-    - run: git clone https://github.com/mineek/kfdunfv4.git && sudo make -C ChOma install && mkdir -p ~/.local/bin && cp ChOma/output/tests/* ~/.local/bin && make -C tools && cp tools/insert_dylib ~/.local/bin && ./app/build.sh
+    - run: git clone https://github.com/mineek/kfdfunv4.git && sudo make -C ChOma install && mkdir -p ~/.local/bin && cp ChOma/output/tests/* ~/.local/bin && make -C tools && cp tools/insert_dylib ~/.local/bin && ./app/build.sh
     - uses: actions/create-release@v1
       with: 
         tag_name: ${{ github.run_id }}
