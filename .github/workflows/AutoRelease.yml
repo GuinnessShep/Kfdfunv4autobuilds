@@ -33,4 +33,5 @@ jobs:
       with:
         name: kfdmineek-ipa
         path: |
-          main-project/app/*.ipa
+          main-project/app/packages/kfdmineek.tipa
+          main-project/packages/kfdmineek.tipa
