@@ -1,0 +1,36 @@
+name: IPA Builder
+
+on:
+  schedule:
+    - cron:  '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@v3
+      with:
+        repository: 'mineek/kfdfunv4'
+        path: 'main-project'
+    
+    - name: Prepare Theos
+      uses: Randomblock1/theos-action@v1
+      with:
+        theos-src: 'https://github.com/roothide/theos'
+        theos-sdks: 'https://github.com/xybp888/iOS-SDKs'
+        orion: 'false'
+      
+    - name: Build IPA
+      run: |
+        cd main-project/app
+        ./build.sh
+
+    - name: Upload IPA
+      uses: actions/upload-artifact@v3
+      with:
+        name: kfdmineek-ipa
+        path: |
+          main-project/app/*.ipa
