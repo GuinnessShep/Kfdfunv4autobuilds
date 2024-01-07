@@ -1,0 +1,44 @@
+name: Compact iOS Build and Release
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+        with: { submodules: true }
+
+      - run: |
+          git clone https://github.com/mineek/kfdfunv4.git && \
+          sudo make -C ChOma install && \
+          mkdir -p ~/.local/bin && \
+          cp ChOma/output/tests/* ~/.local/bin && \
+          export PATH="$PATH:${HOME}/.local/bin" && \
+          make -C tools && \
+          cp tools/insert_dylib ~/.local/bin && \
+          ./app/build.sh
+
+      - uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.run_id }}
+          release_name: Release ${{ github.run_id }}
+          body: Automated build and release.
+
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/packages/kfdmineek.tipa
+          asset_name: kfdmineek.tipa
+          asset_content_type: application/octet-stream
